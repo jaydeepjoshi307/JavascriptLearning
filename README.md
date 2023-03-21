@@ -1,2 +1,2 @@
 # JavascriptLearning
-Javascript Learning assignments
+html, css, javascript, jquery, json, ajax
