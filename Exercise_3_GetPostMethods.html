@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>APIs Play</title>
+  </head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td,
+    th {
+      border: 1px solid #000000;
+      text-align: left;
+      padding: 8px;
+    }
+  </style>
+  <body>
+    <script>
+      function validateForm() {
+        var name = $("#emp__name__id").val();
+        var job = $("#emp__job__id").val();
+        // console.log("My name is " + name + ". I am working as " + job + "." );
+        var validateFormBool = true;
+        if (name == "" || job == "") {
+          validateFormBool = false;
+        }
+        if (validateFormBool == true) {
+          var formData = { name: name, job: job };
+          postDataToApi(formData);
+        } else {
+          alert("Please enter valid information !");
+          return false;
+        }
+      }
+
+      function postDataToApi(formData) {
+        $.ajax({
+          url: "https://reqres.in/api/users",
+          type: "POST",
+          data: formData,
+          success: function (data, textStatus, jqXHR) {
+            // console.log("Inside: ");
+            // console.log("data: ", data);
+            console.log("post status: ", textStatus);
+            // console.log("jqXHR: ", jqXHR);
+            getDataFromApi();
+          },
+          error: function (jqXHR, textStatus, errorThrown) {},
+        });
+      }
+
+      function getDataFromApi() {
+        $.ajax({
+          url: "https://reqres.in/api/users?page=2",
+          type: "GET",
+          success: function (data, textStatus, jqXHR) {
+            // console.log("data: ", data.data[0].id);
+            // console.log("get status: ", textStatus);
+            var dataRange = data.data.length;
+            for(let i=0; i < dataRange ; i++ ){
+                insertDataIntoTable(data.data[i]);
+            }
+          },
+          error: function (jqXHR, textStatus, errorThrown) {},
+        });
+      }
+
+      function insertDataIntoTable(data) {
+    //    console.log("Inside Insert Table");
+        var table = document
+          .getElementById("table__data__id")
+          .getElementsByTagName("tbody")[0];
+          var newRow = table.insertRow(data.length);
+          var cell1 = newRow.insertCell(0);
+          cell1.innerHTML = data.id;
+          var cell2 = newRow.insertCell(1);
+          cell2.innerHTML = data.first_name;
+          var cell3 = newRow.insertCell(2);
+          cell3.innerHTML = data.last_name;
+          var cell4 = newRow.insertCell(3);
+          cell4.innerHTML = data.email;
+      }
+    </script>
+
+    <div id="emp__table__id">
+      <h1>Employee Detail</h1>
+      Name:
+      <input
+        id="emp__name__id"
+        type="text"
+        placeholder="Please enter your name"
+        required
+      />
+      Job:
+      <input
+        id="emp__job__id"
+        type="text"
+        placeholder="Please enter your job-title"
+        required
+      />
+      <button onclick="validateForm()">Save</button>
+    </div>
+
+    <div style="margin-top: 2%"></div>
+
+    <div id="div__table__id">
+      <table id="table__data__id">
+        <thead>
+          <tr>
+            <th>Emp_ID</th>
+            <th>First_Name</th>
+            <th>Last_Name</th>
+            <th>Emp_Email</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+  </body>
+</html>
